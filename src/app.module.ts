@@ -4,9 +4,13 @@ import { ConsulModule } from '@nestcloud/consul';
 import { ServiceModule } from '@nestcloud/service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { TerminusModule } from '@nestjs/terminus';
 import { resolve } from 'path';
 
 import { CommentModule } from './comment/comment.module';
+import { HealthModule } from './health/health.module';
+import { HealthService } from './health/health.service';
+import { TerminusService } from './health/terminus.service';
 
 @Module({
   imports: [
@@ -39,6 +43,12 @@ import { CommentModule } from './comment/comment.module';
       maxRetry: 5,
       retryInterval: 5000,
     }),
+
+    TerminusModule.forRootAsync({
+      imports: [HealthModule],
+      useClass: TerminusService,
+    }),
   ],
+  providers: [TerminusService, HealthService],
 })
 export class AppModule {}
